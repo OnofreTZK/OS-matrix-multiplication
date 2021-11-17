@@ -10,7 +10,7 @@ set ( CMAKE_CXX_FLAGS "-Wall" )
 
 # -------------------------------
 # This is for old cmake versions
-# set (CMAKE_CXX_STANDARD 11)
+# set (CMAKE_CXX_STANDARD 17)
 # -------------------------------
 
 #set include path
@@ -18,10 +18,22 @@ include_directories ( include )
 
 # define the sources for the project
 
-add_executable ( mtx
-				 src/main.cpp ) #this is the application and has the main
+add_executable ( genmtx
+				 src/genmtx.cpp )
 
-# define C++11 standard
-set_property (TARGET mtx PROPERTY CXX_STANDARD 11)
+add_executable ( serialmtx
+				 src/serialmtx.cpp )
+
+add_executable ( threadmtx
+				 src/threadmtx.cpp )
+
+add_executable ( procmtx
+				 src/procmtx.cpp )
+
+# define C++17 standard
+set_property (TARGET genmtx PROPERTY CXX_STANDARD 17)
+set_property (TARGET serialmtx PROPERTY CXX_STANDARD 17)
+set_property (TARGET threadmtx PROPERTY CXX_STANDARD 17)
+set_property (TARGET procmtx PROPERTY CXX_STANDARD 17)
 
 #end
