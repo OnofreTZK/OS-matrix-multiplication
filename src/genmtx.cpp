@@ -76,6 +76,9 @@ bool write_matrix(int ** matrix, std::string id, int row_size, int col_size){
                 output_file << matrix[row][col] << std::endl; 
             }
         }
+        
+        output_file.close();
+
         return true;
     }
 
