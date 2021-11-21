@@ -97,7 +97,10 @@ Matrix multiplication(Matrix mat_01, Matrix mat_02){
     for(int i = 0; i < mat_01.row_size; i++){
         product.matrix[i] = new int [mat_01.col_size];
     }
-    // ---------------------------------
+    // ----------------------------------------------------
+    
+    product.row_size = mat_01.row_size;
+    product.col_size = mat_01.col_size;
     
     for (int row = 0; row < mat_01.row_size; row++){
         for (int col = 0; col < mat_01.col_size; col++){
