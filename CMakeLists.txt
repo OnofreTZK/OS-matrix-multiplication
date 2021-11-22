@@ -3,7 +3,7 @@ project( matrix VERSION 0.1 LANGUAGES CXX)
 
 
 # set the compiling flags
-set ( CMAKE_CXX_FLAGS "-Wall" )
+set ( CMAKE_CXX_FLAGS "-Wall -lpthread" )
 #CMAKE_CXX_FLAGS = "-Wall";
 
 # set the include path

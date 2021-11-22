@@ -113,6 +113,8 @@ Matrix multiplication(Matrix mat_01, Matrix mat_02){
         }
     }
 
+    delete mat_01.matrix;
+    delete mat_02.matrix;
     return product;
 
 }
@@ -170,6 +172,7 @@ int main(int argc, char* argv[]){
 
     if(write_matrix(product.matrix, "serial", product.row_size, product.col_size)){
         std::cout << "Matrices successful generated!" << std::endl;
+        delete product.matrix;
         return EXIT_SUCCESS;
     }
     // else
