@@ -14,7 +14,7 @@
 typedef struct{
     int row_size;
     int col_size;
-    int ** matrix;
+    long int ** matrix;
 } Matrix;
 
 typedef struct{
@@ -62,10 +62,10 @@ Matrix read_file(std::string file_name){
         mat.col_size = col_size;
 
         // Allocating the matrix
-        mat.matrix = new int * [row_size];
+        mat.matrix = new long int * [row_size];
 
         for(int i = 0; i < row_size; i++){
-            mat.matrix[i] = new int [col_size];
+            mat.matrix[i] = new long int [col_size];
         }
         // ---------------------------------
 
@@ -165,7 +165,8 @@ void * multiplication(void * args){
 // ------------------------------------------------------------------------------------------------
 // Write Matrix
 // ------------------------------------------------------------------------------------------------
-bool write_matrix(int ** matrix, std::string id, int row_size, int col_size, int num_threads){
+bool write_matrix(long int ** matrix, std::string id, int row_size, int col_size, 
+        int num_threads, double time){
     
     std::stringstream file_name; 
 
@@ -192,6 +193,8 @@ bool write_matrix(int ** matrix, std::string id, int row_size, int col_size, int
             }
         }
         
+        output_file << time << std::endl;
+
         output_file.close();
 
         return true;
@@ -222,10 +225,10 @@ int main(int argc, char* argv[]){
     
     // Allocating the matrix
     // ----------------------------------------------------------
-    product.matrix = new int * [matrices.first.row_size];
+    product.matrix = new long int * [matrices.first.row_size];
 
     for(int i = 0; i < matrices.first.row_size; i++){
-        product.matrix[i] = new int [matrices.first.col_size];
+        product.matrix[i] = new long int [matrices.first.col_size];
     }
     
     product.row_size = matrices.first.row_size;
@@ -257,8 +260,9 @@ int main(int argc, char* argv[]){
 
     double final_time = std::chrono::duration<double> (timer).count();
 
-    if(write_matrix(product.matrix, "thread", product.row_size, product.col_size, num_threads)){
-        std::cout << final_time << std::endl;
+    if(write_matrix(product.matrix, "thread", product.row_size, product.col_size, 
+                num_threads, final_time)){
+        std::cout << product.row_size << " " << final_time << std::endl;
         delete product.matrix;
         return EXIT_SUCCESS;
     }

@@ -12,7 +12,7 @@
 typedef struct{
     int row_size;
     int col_size;
-    int ** matrix;
+    long ** matrix;
 
 } Matrix;
 
@@ -51,10 +51,10 @@ Matrix read_file(std::string file_name){
         mat.col_size = col_size;
 
         // Allocating the matrix
-        mat.matrix = new int * [row_size];
+        mat.matrix = new long int * [row_size];
 
         for(int i = 0; i < row_size; i++){
-            mat.matrix[i] = new int [col_size];
+            mat.matrix[i] = new long int [col_size];
         }
         // ---------------------------------
 
@@ -91,10 +91,10 @@ Matrix multiplication(Matrix mat_01, Matrix mat_02){
     Matrix product;
 
     // Allocating the matrix
-    product.matrix = new int * [mat_01.row_size];
+    product.matrix = new long int * [mat_01.row_size];
 
     for(int i = 0; i < mat_01.row_size; i++){
-        product.matrix[i] = new int [mat_01.col_size];
+        product.matrix[i] = new long int [mat_01.col_size];
     }
     // ----------------------------------------------------
     
@@ -122,7 +122,7 @@ Matrix multiplication(Matrix mat_01, Matrix mat_02){
 // ------------------------------------------------------------------------------------------------
 // Write Matrix
 // ------------------------------------------------------------------------------------------------
-bool write_matrix(int ** matrix, std::string id, int row_size, int col_size){
+bool write_matrix(long int ** matrix, std::string id, int row_size, int col_size, double time){
     
     std::stringstream file_name; 
 
@@ -148,7 +148,9 @@ bool write_matrix(int ** matrix, std::string id, int row_size, int col_size){
                 output_file << matrix[row][col] << std::endl; 
             }
         }
-        
+       
+        output_file << time << std::endl;
+
         output_file.close();
 
         return true;
@@ -175,8 +177,8 @@ int main(int argc, char* argv[]){
 
     double final_time = std::chrono::duration<double> (timer).count();
 
-    if(write_matrix(product.matrix, "serial", product.row_size, product.col_size)){
-        std::cout << final_time << std::endl;
+    if(write_matrix(product.matrix, "serial", product.row_size, product.col_size, final_time)){
+        std::cout << product.row_size << " " << final_time << std::endl;
         delete product.matrix;
         return EXIT_SUCCESS;
     }

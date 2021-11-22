@@ -54,7 +54,7 @@ bool write_matrix(int ** matrix, std::string id, int row_size, int col_size){
     
     std::stringstream file_name; 
 
-    file_name << "../matrices/matrix_" << id << ".dat";
+    file_name << "../matrices/matrix_" << id << "_size_" << row_size << ".dat";
     
     std::ofstream output_file;
 
