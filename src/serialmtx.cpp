@@ -82,7 +82,6 @@ std::pair<Matrix, Matrix> get_matrices(std::string file_01, std::string file_02)
 }
 // ------------------------------------------------------------------------------------------------
 
-
 // ------------------------------------------------------------------------------------------------
 // Multiplication
 // ------------------------------------------------------------------------------------------------
@@ -127,7 +126,7 @@ bool write_matrix(int ** matrix, std::string id, int row_size, int col_size){
     
     std::stringstream file_name; 
 
-    file_name << "../matrices/matrix_" << id << ".dat";
+    file_name << "../matrices/matrix_" << id << "_" << row_size << ".dat";
     
     std::ofstream output_file;
 
@@ -168,10 +167,16 @@ int main(int argc, char* argv[]){
     
     std::pair<Matrix, Matrix> matrices = get_matrices(argv[1], argv[2]);
 
+    std::chrono::steady_clock::time_point START = std::chrono::steady_clock::now();
     Matrix product = multiplication(matrices.first, matrices.second);
+    std::chrono::steady_clock::time_point STOP = std::chrono::steady_clock::now();
+
+    auto timer = (STOP - START);
+
+    double final_time = std::chrono::duration<double> (timer).count();
 
     if(write_matrix(product.matrix, "serial", product.row_size, product.col_size)){
-        std::cout << "Matrices successful generated!" << std::endl;
+        std::cout << final_time << std::endl;
         delete product.matrix;
         return EXIT_SUCCESS;
     }

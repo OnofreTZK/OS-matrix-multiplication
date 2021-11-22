@@ -95,6 +95,33 @@ std::pair<Matrix, Matrix> get_matrices(std::string file_01, std::string file_02)
 
 
 // ------------------------------------------------------------------------------------------------
+// Write Thread Time
+// ------------------------------------------------------------------------------------------------
+void register_thread_time(double time, int num_threads, int thr, int size){
+
+    std::stringstream file_name;
+
+    file_name << "../matrices/matrix_" << size << "x" << size << "_threads_" << num_threads 
+              << ".dat";
+
+    std::ofstream output_file;
+
+    output_file.open(file_name.str(), std::ofstream::out | std::ofstream::app);
+
+    if(!output_file){
+        std::cerr << "Unable to open file! Please certify you had given the correct directory path to "
+                  << "a valid config file( .dat or .txt )" << std::endl;
+
+        exit(1);
+    } else {
+        output_file << "thread: " << thr << "| Time: " << time << std::endl; 
+        
+        output_file.close();
+    }
+}
+// ------------------------------------------------------------------------------------------------
+
+// ------------------------------------------------------------------------------------------------
 // Multiplication
 // ------------------------------------------------------------------------------------------------
 void * multiplication(void * args){
@@ -111,6 +138,7 @@ void * multiplication(void * args){
     int end = (local_thread_id+1) * slice;
 
  
+    std::chrono::steady_clock::time_point START = std::chrono::steady_clock::now();
     for (int row = start; row < end; row++){
         for (int col = 0; col < mat_01.col_size; col++){
             sum = 0;
@@ -121,9 +149,13 @@ void * multiplication(void * args){
             product.matrix[row][col] = sum;
         }
     }
+    std::chrono::steady_clock::time_point STOP = std::chrono::steady_clock::now();
+    
+    auto timer = (STOP - START);
 
-    //delete mat_01.matrix;
-    //delete mat_02.matrix;
+    double final_time = std::chrono::duration<double> (timer).count();
+
+    register_thread_time(final_time, num_threads, local_thread_id, mat_01.row_size);
 
     return 0;
 
@@ -133,11 +165,11 @@ void * multiplication(void * args){
 // ------------------------------------------------------------------------------------------------
 // Write Matrix
 // ------------------------------------------------------------------------------------------------
-bool write_matrix(int ** matrix, std::string id, int row_size, int col_size){
+bool write_matrix(int ** matrix, std::string id, int row_size, int col_size, int num_threads){
     
     std::stringstream file_name; 
 
-    file_name << "../matrices/matrix_" << id << ".dat";
+    file_name << "../matrices/matrix_" << id << "_" << num_threads << "_" << row_size <<".dat";
     
     std::ofstream output_file;
 
@@ -199,7 +231,9 @@ int main(int argc, char* argv[]){
     product.row_size = matrices.first.row_size;
     product.col_size = matrices.first.col_size;
     // ----------------------------------------------------------
-    
+   
+    std::chrono::steady_clock::time_point START = std::chrono::steady_clock::now();
+    // Starting routines
     for (int thr = 0; thr < num_threads; ++thr){
         int * thread_id;
         thread_id = new int;
@@ -217,9 +251,14 @@ int main(int argc, char* argv[]){
     for (int thr = 0; thr < num_threads; ++thr){
         pthread_join(threads[thr], NULL);
     }
+    std::chrono::steady_clock::time_point STOP = std::chrono::steady_clock::now();
 
-    if(write_matrix(product.matrix, "thread", product.row_size, product.col_size)){
-        std::cout << "Matrices successful generated!" << std::endl;
+    auto timer = (STOP - START);
+
+    double final_time = std::chrono::duration<double> (timer).count();
+
+    if(write_matrix(product.matrix, "thread", product.row_size, product.col_size, num_threads)){
+        std::cout << final_time << std::endl;
         delete product.matrix;
         return EXIT_SUCCESS;
     }
